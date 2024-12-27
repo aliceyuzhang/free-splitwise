@@ -35,30 +35,39 @@ const ExpenseGroupPage = () => {
   )
 }
 
+const THeader = ({ header }) => {
+  return <th scope="col">{header}</th>
+}
+
 const ExpenseTable = ({ expenses }) => {
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Amount</th>
-          <th>Category</th>
-          <th>Description</th>
-          <th>Paid By</th>
-        </tr>
-      </thead>
-      <tbody>
-        {expenses.map((expense, index) => (
-          <tr key={index}>
-            <td>{expense.date}</td>
-            <td>{expense.amount}</td>
-            <td>{expense.category}</td>
-            <td>{expense.description}</td>
-            <td>{expense.paidBy}</td>
+    <div className="relative overflow-x-auto">
+      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+            <THeader header="Date" />
+            <THeader header="Amount" />
+            <THeader header="Category" />
+            <THeader header="Description" />
+            <THeader header="Paid By" />
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {expenses.map((expense, index) => (
+            <tr
+              className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+              key={index}
+            >
+              <td>{expense.date}</td>
+              <td>{expense.amount}</td>
+              <td>{expense.category}</td>
+              <td>{expense.description}</td>
+              <td>{expense.paidBy}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   )
 }
 

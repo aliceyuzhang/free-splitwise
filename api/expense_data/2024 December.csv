@@ -1,0 +1,51 @@
+date,amount,category,description,paid by
+2024-12-13,69.69,dining,snacks,Alice
+2024-12-07,13.49,dining,lunch,Alice
+2024-12-21,7.49,entertainment,museum,Bob
+2024-12-20,90.67,utilities,water bill,Bob
+2024-12-26,79.83,groceries,weekly groceries,Bob
+2024-12-08,37.16,dining,snacks,Alice
+2024-12-16,24.69,utilities,internet bill,Bob
+2024-12-21,20.23,shopping,clothes,Alice
+2024-12-18,8.99,entertainment,museum,Alice
+2024-12-16,35.92,shopping,electronics,Alice
+2024-12-15,35.91,transportation,train ride,Bob
+2024-12-29,23.14,utilities,internet bill,Bob
+2024-12-20,71.04,shopping,home decor,Alice
+2024-12-13,38.06,entertainment,SF Botanical Garden,Bob
+2024-12-13,63.63,transportation,taxi fare,Bob
+2024-12-03,99.46,entertainment,movie ticket,Bob
+2024-12-22,48.96,transportation,bus ticket,Bob
+2024-12-31,35.88,entertainment,SF Botanical Garden,Alice
+2024-12-21,37.21,shopping,home decor,Alice
+2024-12-10,66.2,shopping,clothes,Bob
+2024-12-09,62.55,transportation,bus ticket,Alice
+2024-12-08,41.82,utilities,water bill,Bob
+2024-12-07,35.17,dining,lunch,Alice
+2024-12-13,14.2,entertainment,movie ticket,Alice
+2024-12-03,27.76,entertainment,movie ticket,Bob
+2024-12-26,86.72,dining,lunch,Alice
+2024-12-22,72.46,entertainment,SF Botanical Garden,Bob
+2024-12-05,7.18,shopping,electronics,Bob
+2024-12-13,71.74,dining,snacks,Alice
+2024-12-03,75.53,utilities,internet bill,Alice
+2024-12-19,18.3,entertainment,movie ticket,Bob
+2024-12-17,50.89,groceries,fruits and veggies,Alice
+2024-12-24,32.76,groceries,fruits and veggies,Bob
+2024-12-19,24.75,transportation,train ride,Alice
+2024-12-22,46.34,groceries,weekly groceries,Alice
+2024-12-30,30.47,entertainment,concert,Bob
+2024-12-18,49.25,dining,lunch,Bob
+2024-12-03,70.92,shopping,home decor,Bob
+2024-12-27,99.83,entertainment,concert,Alice
+2024-12-29,6.1,shopping,clothes,Bob
+2024-12-25,63.86,entertainment,museum,Alice
+2024-12-02,75.75,transportation,train ride,Alice
+2024-12-20,12.35,shopping,home decor,Alice
+2024-12-23,35.13,dining,lunch,Bob
+2024-12-02,75.1,transportation,bus ticket,Bob
+2024-12-31,39.62,groceries,fruits and veggies,Alice
+2024-12-02,97.41,utilities,water bill,Bob
+2024-12-29,26.36,groceries,weekly groceries,Alice
+2024-12-22,27.89,shopping,clothes,Bob
+2024-12-30,33.71,shopping,home decor,Bob

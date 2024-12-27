@@ -1,0 +1,29 @@
+/**
+ * START --- SETUP TAILWINDCSS EDIT
+ *
+ * `yarn rw setup ui tailwindcss` placed these directives here
+ * to inject Tailwind's styles into your CSS.
+ * For more information, see: https://tailwindcss.com/docs/installation
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/**
+ * END --- SETUP TAILWINDCSS EDIT
+ */
+
+h1 {
+  @apply text-4xl font-extrabold dark:text-white spacing
+}
+
+th {
+  @apply px-6 py-3
+}
+
+td {
+  @apply px-6 py-4
+}
+
+.spacing {
+  margin: 20px 20px 20px 20px;
+}

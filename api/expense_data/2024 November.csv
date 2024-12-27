@@ -1,0 +1,51 @@
+date,amount,category,description,paid by
+2024-11-12,75.93,utilities,electricity bill,Alice
+2024-11-24,33.88,shopping,clothes,Alice
+2024-11-08,85.51,dining,snacks,Bob
+2024-11-29,46.02,shopping,clothes,Alice
+2024-11-15,85.68,groceries,weekly groceries,Bob
+2024-11-21,14.75,shopping,clothes,Bob
+2024-11-05,82.86,shopping,home decor,Bob
+2024-11-12,15.81,groceries,fruits and veggies,Bob
+2024-11-06,38.5,groceries,dairy products,Bob
+2024-11-26,33.73,entertainment,museum,Bob
+2024-11-22,20.95,utilities,electricity bill,Alice
+2024-11-04,33.46,transportation,taxi fare,Alice
+2024-11-24,68.58,entertainment,movie ticket,Bob
+2024-11-28,91.49,entertainment,movie ticket,Alice
+2024-11-05,38.04,dining,snacks,Bob
+2024-11-30,70.6,dining,dinner,Bob
+2024-11-30,79.31,shopping,electronics,Bob
+2024-11-25,60.2,utilities,internet bill,Alice
+2024-11-21,62.88,utilities,internet bill,Bob
+2024-11-23,94.68,dining,snacks,Alice
+2024-11-24,14.37,groceries,weekly groceries,Alice
+2024-11-25,99.74,shopping,electronics,Alice
+2024-11-22,73.15,transportation,gas refill,Alice
+2024-11-10,23.5,dining,dinner,Bob
+2024-11-10,57.76,utilities,water bill,Alice
+2024-11-18,29.54,transportation,taxi fare,Bob
+2024-11-11,37.77,shopping,clothes,Alice
+2024-11-11,68.55,dining,breakfast,Alice
+2024-11-09,94.89,dining,lunch,Bob
+2024-11-30,19.28,utilities,electricity bill,Alice
+2024-11-14,96.98,groceries,fruits and veggies,Bob
+2024-11-28,29.45,shopping,electronics,Alice
+2024-11-25,21.92,dining,lunch,Bob
+2024-11-09,85.17,groceries,dairy products,Alice
+2024-11-04,76.97,dining,snacks,Bob
+2024-11-11,46.45,dining,dinner,Bob
+2024-11-05,66.28,transportation,bus ticket,Bob
+2024-11-08,27.38,utilities,electricity bill,Bob
+2024-11-05,5.04,groceries,fruits and veggies,Bob
+2024-11-02,80.85,shopping,clothes,Alice
+2024-11-08,68.84,dining,snacks,Bob
+2024-11-23,96.01,entertainment,movie ticket,Bob
+2024-11-13,54.04,groceries,fruits and veggies,Alice
+2024-11-11,66.38,utilities,internet bill,Bob
+2024-11-12,81.33,shopping,home decor,Bob
+2024-11-18,83.52,utilities,internet bill,Alice
+2024-11-02,15.32,utilities,water bill,Bob
+2024-11-13,31.63,transportation,taxi fare,Alice
+2024-11-02,70.49,groceries,dairy products,Bob
+2024-11-15,92.42,utilities,water bill,Bob
