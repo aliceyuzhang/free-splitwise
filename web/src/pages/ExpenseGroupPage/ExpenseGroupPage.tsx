@@ -1,5 +1,5 @@
 // import { Link, routes } from '@redwoodjs/router'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import { Button, Modal, Pagination } from 'flowbite-react'
 import { Expense } from 'types/graphql'
@@ -11,7 +11,7 @@ import { formatMoney } from 'src/components/Utils/utils'
 
 export const QUERY = gql`
   query ExpenseGroupQuery($id: String!) {
-    expenseGroup(id: $id) {
+    expenseGroup(id: $id, orderBy: { direction: "asc", field: "date" }) {
       expenses {
         date
         amount
@@ -29,7 +29,13 @@ const ExpenseGroupPage = () => {
   const [openModal, setOpenModal] = useState(false)
 
   const { data, loading, error } = useQuery(QUERY, {
-    variables: { id },
+    variables: {
+      id,
+      orderBy: {
+        filed: 'date',
+        direction: 'asc',
+      },
+    },
   })
 
   const balances = useMemo(() => {

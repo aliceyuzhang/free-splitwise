@@ -1,7 +1,12 @@
 export const schema = gql`
+  input OrderByInput {
+    field: String!
+    direction: String! # 'asc' or 'desc'
+  }
+
   type ExpenseGroup {
     id: String!
-    expenses: [Expense!]!
+    expenses(orderBy: OrderByInput): [Expense!]!
   }
 
   type Expense {
@@ -18,6 +23,6 @@ export const schema = gql`
   }
   type Query {
     expenseGroupIds: ExpenseGroupIds @skipAuth
-    expenseGroup(id: String!): ExpenseGroup! @skipAuth
+    expenseGroup(id: String!, orderBy: OrderByInput): ExpenseGroup! @skipAuth
   }
 `
