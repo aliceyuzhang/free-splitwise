@@ -1,7 +1,7 @@
 // import { Link, routes } from '@redwoodjs/router'
 import React, { useCallback, useMemo, useState } from 'react'
 
-import { Button, Modal } from 'flowbite-react'
+import { Button, Modal, Pagination } from 'flowbite-react'
 import { Expense } from 'types/graphql'
 
 import { useParams } from '@redwoodjs/router'
@@ -22,46 +22,18 @@ export const QUERY = gql`
     }
   }
 `
+const rowsPerPage = 10
 
 const ExpenseGroupPage = () => {
   const { id } = useParams()
+  const [openModal, setOpenModal] = useState(false)
 
   const { data, loading, error } = useQuery(QUERY, {
     variables: { id },
   })
 
-  if (loading) return <div>Loading...</div>
-  if (error) return <div>Error: {error.message}</div>
-
-  return (
-    <>
-      <Metadata title="ExpenseGroup" />
-      <h1>{id}</h1>
-      <ExpenseTable expenses={data.expenseGroup.expenses} />
-    </>
-  )
-}
-
-const THeader = ({ header }) => {
-  return <th scope="col">{header}</th>
-}
-
-const ExpenseTable = ({ expenses }: { expenses: Expense[] }) => {
-  const [currentPage, setCurrentPage] = useState(1)
-  const [openModal, setOpenModal] = useState(false)
-  const rowsPerPage = 10
-  const totalPages = Math.ceil(expenses.length / rowsPerPage)
-  // Get current page data
-  const currentData = useMemo(
-    () =>
-      expenses.slice(
-        (currentPage - 1) * rowsPerPage,
-        currentPage * rowsPerPage
-      ),
-    [currentPage, expenses]
-  )
-
   const balances = useMemo(() => {
+    const expenses: Expense[] = data?.expenseGroup?.expenses ?? []
     const people = Array.from(new Set(expenses.map(({ paidBy }) => paidBy)))
     const perPersonCost =
       expenses.reduce((sum, { amount }) => sum + amount, 0) / people.length
@@ -73,17 +45,26 @@ const ExpenseTable = ({ expenses }: { expenses: Expense[] }) => {
           .filter(({ paidBy }) => paidBy == person)
           .reduce((sum, { amount }) => sum + amount, 0),
     }))
-  }, [expenses])
+  }, [data])
+
+  if (loading) return <div>Loading...</div>
+  if (error) return <div>Error: {error.message}</div>
 
   return (
-    <div className="relative overflow-x-auto">
-      <button
-        type="button"
-        className="calculate-button"
-        onClick={() => setOpenModal(true)}
-      >
-        Calculate
-      </button>
+    <>
+      <Metadata title="ExpenseGroup" />
+      <div className="flex items-center justify-between mb-4 spacing">
+        <h1 className="text-xl font-bold">{id}</h1>
+        <button
+          type="button"
+          className="show-balance-button"
+          onClick={() => setOpenModal(true)}
+        >
+          Show Balances
+        </button>
+      </div>
+
+      {/* Modal to show balances owed */}
       <Modal show={openModal} onClose={() => setOpenModal(false)}>
         <Modal.Header>Balances</Modal.Header>
         <Modal.Body className="spacing">
@@ -104,7 +85,34 @@ const ExpenseTable = ({ expenses }: { expenses: Expense[] }) => {
           </Button>
         </Modal.Footer>
       </Modal>
-      <table className="table">
+
+      <ExpenseTable expenses={data.expenseGroup.expenses} />
+    </>
+  )
+}
+
+const THeader = ({ header }) => {
+  return <th scope="col">{header}</th>
+}
+
+const ExpenseTable = ({ expenses }: { expenses: Expense[] }) => {
+  const [currentPage, setCurrentPage] = useState(1)
+  const totalPages = Math.ceil(expenses.length / rowsPerPage)
+  // Get current page data
+  const currentData = useMemo(
+    () =>
+      expenses.slice(
+        (currentPage - 1) * rowsPerPage,
+        currentPage * rowsPerPage
+      ),
+    [currentPage, expenses]
+  )
+  const onPageChange = (page: number) => setCurrentPage(page)
+
+  return (
+    <div className="relative overflow-x-auto spacing">
+      {/* Transaction details */}
+      <table className="table bottom-spacing">
         <thead className="thead">
           <tr>
             <THeader header="Date" />
@@ -131,31 +139,11 @@ const ExpenseTable = ({ expenses }: { expenses: Expense[] }) => {
       </table>
 
       {/* Pagination Controls */}
-      <div className="flex justify-center items-center mt-4 space-x-1">
-        <button
-          onClick={() => setCurrentPage(currentPage - 1)}
-          disabled={currentPage === 1}
-          className={`px-3 py-1 text-sm rounded-lg ${currentPage === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-gray-200 hover:bg-gray-300'}`}
-        >
-          Previous
-        </button>
-        {Array.from({ length: totalPages }, (_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrentPage(i + 1)}
-            className={`px-3 py-1 text-sm rounded-lg ${currentPage === i + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
-          >
-            {i + 1}
-          </button>
-        ))}
-        <button
-          onClick={() => setCurrentPage(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className={`px-3 py-1 text-sm rounded-lg ${currentPage === totalPages ? 'bg-gray-300 cursor-not-allowed' : 'bg-gray-200 hover:bg-gray-300'}`}
-        >
-          Next
-        </button>
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={onPageChange}
+      />
     </div>
   )
 }
