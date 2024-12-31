@@ -1,28 +1,14 @@
-import { Link, routes } from '@redwoodjs/router'
+import Nav from 'src/components/Nav/Nav'
 
-type PageLayoutProps = {
-  children?: React.ReactNode
-}
-
-const PageLayout = ({ children }: PageLayoutProps) => {
+const PageLayout = ({ children }) => {
   return (
     <>
-      <header>
-        <h1>
-          <Link to={routes.home()}>My Own SplitWise</Link>
-        </h1>
-        <nav>
-          <ul>
-            <li>
-              <Link to={routes.home()}>Home</Link>
-            </li>
-            <li>
-              <Link to={routes.about()}>About</Link>
-            </li>
-          </ul>
-        </nav>
-      </header>
-      <main>{children}</main>
+      <div id="page-container">
+        <Nav />
+        <div id="page-content">
+          <main>{children}</main>
+        </div>
+      </div>
     </>
   )
 }

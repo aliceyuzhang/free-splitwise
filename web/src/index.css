@@ -12,6 +12,18 @@
  * END --- SETUP TAILWINDCSS EDIT
  */
 
+#home {
+  @apply spacing
+}
+
+#page-container {
+  margin: 30px;
+}
+
+#page-content {
+  margin: 10px;
+}
+
 h1 {
   @apply text-4xl font-extrabold dark:text-white
 }
@@ -25,7 +37,7 @@ td {
 }
 
 .spacing {
-  margin: 20px 20px 20px 20px;
+  margin: 20px;
 }
 
 .bottom-spacing {

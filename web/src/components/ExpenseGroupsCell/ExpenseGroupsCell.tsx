@@ -1,3 +1,4 @@
+import { List } from 'flowbite-react'
 import { ExpenseGroupIdsQuery } from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
@@ -18,13 +19,14 @@ export const Empty = () => <div>Empty</div>
 export const Success = ({
   expenseGroupIds,
 }: CellSuccessProps<ExpenseGroupIdsQuery>) => {
+  console.log('showing home elements')
   return (
-    <ul>
+    <List>
       {expenseGroupIds.ids.map((id) => (
-        <li key={id}>
+        <List.Item key={id}>
           <Link to={routes.expenseGroup({ id })}>{id}</Link>
-        </li>
+        </List.Item>
       ))}
-    </ul>
+    </List>
   )
 }
