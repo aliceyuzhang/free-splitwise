@@ -1,13 +1,14 @@
 // import { Link, routes } from '@redwoodjs/router'
 import React, { useMemo, useState } from 'react'
 
-import { Button, Modal, Pagination } from 'flowbite-react'
+import { Pagination } from 'flowbite-react'
 import { Expense } from 'types/graphql'
 
 import { useParams } from '@redwoodjs/router'
 import { Metadata, useQuery } from '@redwoodjs/web'
 
-import { formatMoney } from 'src/components/Utils/utils'
+import BalanceModal from 'src/components/BalanceModal/BalanceModal'
+import { Balance } from 'src/components/Utils/utils'
 
 export const QUERY = gql`
   query ExpenseGroupQuery($id: String!) {
@@ -22,6 +23,7 @@ export const QUERY = gql`
     }
   }
 `
+
 const rowsPerPage = 10
 
 const ExpenseGroupPage = () => {
@@ -38,7 +40,7 @@ const ExpenseGroupPage = () => {
     },
   })
 
-  const balances = useMemo(() => {
+  const balances: Balance[] = useMemo(() => {
     const expenses: Expense[] = data?.expenseGroup?.expenses ?? []
     const people = Array.from(new Set(expenses.map(({ paidBy }) => paidBy)))
     const perPersonCost =
@@ -56,6 +58,10 @@ const ExpenseGroupPage = () => {
   if (loading) return <div>Loading...</div>
   if (error) return <div>Error: {error.message}</div>
 
+  const onModalClosed = () => {
+    setOpenModal(false)
+  }
+
   return (
     <>
       <Metadata title="ExpenseGroup" />
@@ -69,28 +75,11 @@ const ExpenseGroupPage = () => {
           Show Balances
         </button>
       </div>
-
-      {/* Modal to show balances owed */}
-      <Modal show={openModal} onClose={() => setOpenModal(false)}>
-        <Modal.Header>Balances</Modal.Header>
-        <Modal.Body className="spacing">
-          <div className="space-y-6">
-            {balances.map((balanceOwed, index) => (
-              <p
-                className="text-base leading-relaxed text-gray-500 dark:text-gray-400"
-                key={index}
-              >
-                {balanceOwed.person}: {formatMoney(balanceOwed.balance)}
-              </p>
-            ))}
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button color="gray" onClick={() => setOpenModal(false)}>
-            OK
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <BalanceModal
+        balances={balances}
+        openModal={openModal}
+        onModalClosed={onModalClosed}
+      />
 
       <ExpenseTable expenses={data.expenseGroup.expenses} />
     </>
