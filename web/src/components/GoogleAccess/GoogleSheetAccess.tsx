@@ -1,9 +1,13 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Button, Label, TextInput, Modal } from 'flowbite-react'
 
-const CLIENT_ID = '<CLIENT_ID>'
+import { navigate } from '@redwoodjs/router'
+
+const CLIENT_ID = '<CLIENT_ID>' // TODO: change this
 const SCOPE = 'https://www.googleapis.com/auth/drive.readonly'
+const TTL = 30 // 30 min
+const LS_GOOGLE_ACCESS_TOKEN_KEY = 'google-access-token'
 
 const GoogleAccess = () => {
   const [fileURL, setFileURL] = useState('')
@@ -12,12 +16,19 @@ const GoogleAccess = () => {
   const [isFileInputModalOpen, setIsFileInputModalOpen] = useState(false) // Step 2
 
   const handleSignIn = () => {
+    const expiryms = new Date(new Date().getTime() + TTL * 60 * 1000)
     const tokenClient = google.accounts.oauth2.initTokenClient({
       client_id: CLIENT_ID,
       scope: SCOPE,
       callback: (response: { access_token: string }) => {
         setAccessToken(response.access_token)
-        console.log('Access Token:', response.access_token)
+        localStorage.setItem(
+          LS_GOOGLE_ACCESS_TOKEN_KEY,
+          JSON.stringify({
+            token: response.access_token,
+            expiry_ms: expiryms,
+          })
+        )
         setIsAuthModalOpen(false)
         setIsFileInputModalOpen(true)
       },
@@ -26,6 +37,25 @@ const GoogleAccess = () => {
     // Request an access token
     tokenClient.requestAccessToken()
   }
+
+  useEffect(() => {
+    const item = localStorage.getItem(LS_GOOGLE_ACCESS_TOKEN_KEY)
+    if (item!) {
+      const json = JSON.parse(item)
+      const storedAccessToken = json['token']
+      const expiryMs = new Date(json['expiry_ms'])
+      if (
+        item &&
+        storedAccessToken &&
+        expiryMs >= new Date(new Date().getTime())
+      ) {
+        setAccessToken(storedAccessToken)
+      } else {
+        localStorage.removeItem(LS_GOOGLE_ACCESS_TOKEN_KEY)
+        setAccessToken(null)
+      }
+    }
+  })
 
   const onGoogleSheetURLSubmit = async (fileId: string) => {
     if (!accessToken) {
@@ -45,25 +75,8 @@ const GoogleAccess = () => {
       )
       const metadata = await metadataResponse.json()
 
-      // If the file is a Google Sheet, export it as CSV
       if (metadata.mimeType === 'application/vnd.google-apps.spreadsheet') {
-        const exportResponse = await fetch(
-          `https://www.googleapis.com/drive/v3/files/${fileId}/export?mimeType=text/csv`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        )
-        const csvContent = await exportResponse.text()
-
-        // Create a downloadable CSV file
-        const blob = new Blob([csvContent], { type: 'text/csv' })
-        const link = document.createElement('a')
-        link.href = URL.createObjectURL(blob)
-        link.download = `${metadata.name || 'file'}.csv`
-        link.click()
-        URL.revokeObjectURL(link.href) // Clean up the URL object
+        navigate(`/expense-group?id=google-${fileId}`)
       } else {
         console.error('Unsupported file type:', metadata.mimeType)
       }
@@ -88,7 +101,11 @@ const GoogleAccess = () => {
   return (
     <div>
       {/* Step 1: Authentication Modal */}
-      <Modal show={isAuthModalOpen} onClose={() => {}} size="lg">
+      <Modal
+        show={isAuthModalOpen && !accessToken}
+        onClose={() => {}}
+        size="lg"
+      >
         <Modal.Header>Sign in with Google</Modal.Header>
         <Modal.Body className="spacing">
           <p className="text-gray-700 bottom-spacing">
@@ -101,7 +118,7 @@ const GoogleAccess = () => {
 
       {/* Step 2: File Input Modal */}
       <Modal
-        show={isFileInputModalOpen}
+        show={isFileInputModalOpen || !!accessToken}
         onClose={() => setIsFileInputModalOpen(false)}
         size="lg"
       >

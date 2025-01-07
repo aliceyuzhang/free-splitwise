@@ -1,12 +1,7 @@
 // import { Link, routes } from '@redwoodjs/router'
-
-import { GoogleOAuthProvider } from '@react-oauth/google'
-
 import { Metadata } from '@redwoodjs/web'
 
-import ExpenseGroupsCell from 'src/components/ExpenseGroupsCell'
 import GoogleAccess from 'src/components/GoogleAccess/GoogleSheetAccess'
-import GoogleFileReader from 'src/components/GoogleFileReader/GoogleFileReader'
 
 const HomePage = () => {
   return (

@@ -1,7 +1,8 @@
 // import { Link, routes } from '@redwoodjs/router'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import { Pagination } from 'flowbite-react'
+import Papa from 'papaparse'
 import { Expense } from 'types/graphql'
 
 import { useParams } from '@redwoodjs/router'
@@ -28,20 +29,54 @@ const rowsPerPage = 10
 
 const ExpenseGroupPage = () => {
   const { id } = useParams()
+  const [googleSheetData, setGoogleSheetData] = useState([])
+  const [googleSheetError, setGoogleSheetError] = useState(null)
   const [openModal, setOpenModal] = useState(false)
-
   const { data, loading, error } = useQuery(QUERY, {
-    variables: {
-      id,
-      orderBy: {
-        filed: 'date',
-        direction: 'asc',
-      },
-    },
+    variables: { id },
+    skip: id.startsWith('google-'), // Skip query for Google Sheets
   })
 
+  useEffect(() => {
+    if (id.startsWith('google-')) {
+      const fileId = id.substring('google-'.length)
+      const fetchGoogleSheet = async () => {
+        try {
+          const exportResponse = await fetch(
+            `https://www.googleapis.com/drive/v3/files/${fileId}/export?mimeType=text/csv`,
+            {
+              headers: {
+                Authorization: `Bearer ${
+                  JSON.parse(localStorage.getItem('google-access-token'))[
+                    'token'
+                  ]
+                }`,
+              },
+            }
+          )
+          if (!exportResponse.ok) {
+            throw new Error(
+              `Failed to fetch Google Sheet: ${exportResponse.statusText}`
+            )
+          }
+          const expenses = parseCSV(await exportResponse.text())
+          setGoogleSheetData(expenses)
+        } catch (err) {
+          setGoogleSheetError(err.message)
+        }
+      }
+      fetchGoogleSheet()
+    }
+  }, [id])
+
+  const expenses = useMemo(() => {
+    if (id.startsWith('google-')) {
+      return googleSheetData || []
+    }
+    return data?.expenseGroup?.expenses || []
+  }, [googleSheetData, data, id])
+
   const balances: Balance[] = useMemo(() => {
-    const expenses: Expense[] = data?.expenseGroup?.expenses ?? []
     const people = Array.from(new Set(expenses.map(({ paidBy }) => paidBy)))
     const perPersonCost =
       expenses.reduce((sum, { amount }) => sum + amount, 0) / people.length
@@ -53,10 +88,12 @@ const ExpenseGroupPage = () => {
           .filter(({ paidBy }) => paidBy == person)
           .reduce((sum, { amount }) => sum + amount, 0),
     }))
-  }, [data])
+  }, [expenses])
 
-  if (loading) return <div>Loading...</div>
-  if (error) return <div>Error: {error.message}</div>
+  if (loading || (id.startsWith('google-') && !googleSheetData))
+    return <div>Loading...</div>
+  if (error || googleSheetError)
+    return <div>Error: {error?.message || googleSheetError}</div>
 
   const onModalClosed = () => {
     setOpenModal(false)
@@ -81,7 +118,7 @@ const ExpenseGroupPage = () => {
         onModalClosed={onModalClosed}
       />
 
-      <ExpenseTable expenses={data.expenseGroup.expenses} />
+      <ExpenseTable expenses={expenses} />
     </>
   )
 }
@@ -141,6 +178,20 @@ const ExpenseTable = ({ expenses }: { expenses: Expense[] }) => {
       />
     </div>
   )
+}
+
+const parseCSV = (csvData) => {
+  const expenses = Papa.parse(csvData, { header: true }).data.map((expense) => {
+    return {
+      date: expense['date'],
+      amount: Number(expense['amount']),
+      category: expense['category'],
+      description: expense['description'],
+      paidBy: expense['paid by'],
+    }
+  })
+  console.log(expenses)
+  return expenses
 }
 
 export default ExpenseGroupPage
