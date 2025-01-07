@@ -8,6 +8,7 @@ import { Expense } from 'types/graphql'
 import { useParams } from '@redwoodjs/router'
 import { Metadata, useQuery } from '@redwoodjs/web'
 
+import AddExpenseModal from 'src/components/AddExpenseModal/AddExpenseModal'
 import BalanceModal from 'src/components/BalanceModal/BalanceModal'
 import { Balance } from 'src/components/Utils/utils'
 
@@ -32,6 +33,7 @@ const ExpenseGroupPage = () => {
   const [googleSheetData, setGoogleSheetData] = useState([])
   const [googleSheetError, setGoogleSheetError] = useState(null)
   const [openModal, setOpenModal] = useState(false)
+  const [addExpenseModal, setAddExpenseModal] = useState(false)
   const { data, loading, error } = useQuery(QUERY, {
     variables: { id },
     skip: id.startsWith('google-'), // Skip query for Google Sheets
@@ -99,23 +101,47 @@ const ExpenseGroupPage = () => {
     setOpenModal(false)
   }
 
+  const onAddExpenseModalClosed = () => {
+    setAddExpenseModal(false)
+  }
+
+  const onExpenseSubmitted = (expense: Expense) => {
+    setAddExpenseModal(false)
+    expenses.push(expense)
+  }
+
   return (
     <>
       <Metadata title="ExpenseGroup" />
       <div className="flex items-center justify-between mb-4 spacing">
         <h1 className="text-xl font-bold">{id}</h1>
-        <button
-          type="button"
-          className="show-balance-button"
-          onClick={() => setOpenModal(true)}
-        >
-          Show Balances
-        </button>
+        <div>
+          <button
+            type="button"
+            className="add-expense-button"
+            onClick={() => setAddExpenseModal(true)}
+          >
+            Add Expense
+          </button>
+          <button
+            type="button"
+            className="show-balance-button"
+            onClick={() => setOpenModal(true)}
+          >
+            Show Balances
+          </button>
+        </div>
       </div>
+
       <BalanceModal
         balances={balances}
         openModal={openModal}
         onModalClosed={onModalClosed}
+      />
+      <AddExpenseModal
+        openModal={addExpenseModal}
+        onSubmitted={onExpenseSubmitted}
+        onClosed={onAddExpenseModalClosed}
       />
 
       <ExpenseTable expenses={expenses} />
@@ -190,7 +216,6 @@ const parseCSV = (csvData) => {
       paidBy: expense['paid by'],
     }
   })
-  console.log(expenses)
   return expenses
 }
 
